@@ -4,11 +4,11 @@ using System.Security.Claims;
 
 namespace SampleAPI.Auth;
 
-public class TokenService : ITokenService
+public class TokenService
 {
     private static readonly TimeSpan _expirationDuration = TimeSpan.FromHours(12);
 
-    string ITokenService.BuildToken(IConfiguration config, string userName, int orgID)
+    public string BuildToken(IConfiguration config, string userName, int orgID)
     {
         var (issuer, audience, key) = config.Jwt();
         Console.WriteLine(Convert.ToBase64String(key));

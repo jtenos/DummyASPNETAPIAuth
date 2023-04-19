@@ -5,7 +5,7 @@ using SampleAPI.Auth;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<ITokenService>(new TokenService());
+builder.Services.AddSingleton<TokenService>();
 builder.Services.AddCors();
 builder.Services.AddAuthorization(options =>
 {

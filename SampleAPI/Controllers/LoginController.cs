@@ -8,10 +8,10 @@ namespace SampleAPI.Controllers;
 [ApiController]
 public class LoginController : ControllerBase
 {
-    private readonly ITokenService _tokenService;
+    private readonly TokenService _tokenService;
     private readonly IConfiguration _config;
 
-    public LoginController(ITokenService tokenService, IConfiguration config)
+    public LoginController(TokenService tokenService, IConfiguration config)
     {
         _tokenService = tokenService;
         _config = config;
