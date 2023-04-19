@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+
+    <div>
+        User Name: <input type="text" id="userName" /><br />
+        Org ID: <input type="text" id="orgID" /><br />
+        <input type="button" onclick="logIn()" value="Log In" />
+    </div>
+    <hr />
+    <div id="admin-section">
+        <input type="button" onclick="refreshAdminSection()" value="Refresh Admin Section" />
+        <div id="admin-success">You have not loaded admin section</div>
+        <div id="admin-message">You have not loaded admin section</div>
+    </div>
+    <hr />
+    <div id="hr-section">
+        <input type="button" onclick="refreshHrSection()" value="Refresh HR Section" />
+        <div id="hr-success">You have not loaded HR section</div>
+        <div id="hr-message">You have not loaded HR section</div>
+    </div>
+    <hr />
+    <div id="auth-info">
+        <input id="success" style="width: 100%;" readonly />
+        <br />
+        <input id="jwt" style="width: 100%;" readonly />
+    </div>
+
+    <script>
+    async function logIn() {
+        const u = document.getElementById("userName").value;
+        const o = parseInt(document.getElementById("orgID").value, 10);
+        const fetchResp = await fetch("http://localhost:5264/login", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userName: u, orgID: o })
+        });
+        const resp = await fetchResp.json();
+        document.getElementById("success").value = resp.success;
+        document.getElementById("jwt").value = resp.jwt;
+    }
+
+    async function refreshAdminSection() {
+        const jwt = document.getElementById("jwt").value;
+        fetch("http://localhost:5264/admin", {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            headers: { "Authorization": `Bearer ${jwt}` }
+        }).then(resp => {
+            if (!resp.ok){
+                document.getElementById("admin-success").innerText = "Failure";
+                document.getElementById("admin-message").innerText = resp.statusText;
+                return;
+            }
+            return resp.json();
+        }).then(resp => {
+            if (resp) {
+                document.getElementById("admin-success").innerText = resp.success;
+                document.getElementById("admin-message").innerText = resp.message;
+            }
+        }).catch(resp => {
+            document.getElementById("admin-success").innerText = resp;
+            document.getElementById("admin-message").innerText = resp.statusText;
+        });
+    }
+
+    async function refreshHrSection() {
+        const jwt = document.getElementById("jwt").value;
+        fetch("http://localhost:5264/humanresources", {
+            method: "GET",
+            mode: "cors",
+            cache: "no-cache",
+            headers: { "Authorization": `Bearer ${jwt}` }
+        }).then(resp => {
+            if (!resp.ok) {
+                document.getElementById("hr-success").innerText = "Failure";
+                document.getElementById("hr-message").innerText = resp.statusText;
+                return;
+            }
+            return resp.json();
+        }).then(resp => {
+            if (resp) {
+                document.getElementById("hr-success").innerText = resp.success;
+                document.getElementById("hr-message").innerText = resp.message;
+            }
+        }).catch(resp => {
+            document.getElementById("hr-success").innerText = resp;
+            document.getElementById("hr-message").innerText = resp.statusText;
+        });
+    }
+    </script>
+</body>
+</html>
